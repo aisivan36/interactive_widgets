@@ -26,9 +26,14 @@ class GroceryScreen extends StatelessWidget {
             /// In iOS it slides in from the right
             MaterialPageRoute(
               builder: (context) => GroceryItemScreen(
+                // onCreate defines what to do with the created item
                 onCreate: (item) {
-                  manager.additem(item);
+                  /// [addItem] adds this new item to the list of items
+                  manager.addItem(item);
                 },
+
+                // ignore: lines_longer_than_80_chars
+                /// [onUpdate] will never get called since we're creating new item
                 onUpdate: (item) {},
               ),
             ),
