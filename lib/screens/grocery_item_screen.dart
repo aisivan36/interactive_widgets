@@ -90,15 +90,136 @@ class _GroceryItemScreenState extends State<GroceryItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO add groceryitemscreen scafold
-    return Container(
-      color: Colors.orange,
+    /// [Scafold] defines the main layout and structure of the entire screen.
+    return Scaffold(
+      /// [Button] includes an app bar with one action [button].
+      /// The user will tap this button when they have finished creating an item
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              /// TODO add callback handler
+            },
+            icon: Icon(Icons.check),
+          ),
+        ],
+
+        /// Set [elevation] to [0.0] it removes the shadow under the appbar.
+        elevation: 0.0,
+
+        /// [AppBar]'s title
+        title: Text(
+          'Grocery Item',
+          style: GoogleFonts.lato(fontWeight: FontWeight.w600),
+        ),
+      ),
+
+      /// Shows a listview padded by 16 pixels on every side, within the body
+      /// of [Scaffold]
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            buildNameField(),
+            buildImportanceField(),
+// TODO 15: Add date picker
+// TODO 16: Add time picker
+// TODO 17: Add color picker
+// TODO 18: Add slider
+// TODO: 19: Add Grocery Tile
+          ],
+        ),
+      ),
     );
-    // TODO: Add buildNameField()
-// TODO: Add buildImportanceField()
+  }
+
+  /// Text name Field
+  Widget buildNameField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Item Name',
+          style: GoogleFonts.lato(fontSize: 28.0),
+        ),
+        TextField(
+          controller: _nameController,
+          cursorColor: _currentColor,
+          decoration: InputDecoration(
+            hintText: 'E.g. Apples, Banana, 1 Bag of salt',
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _currentColor),
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: _currentColor),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Importance's Button
+  Widget buildImportanceField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Importance',
+          style: GoogleFonts.lato(fontSize: 28.0),
+        ),
+        Wrap(
+          spacing: 10.0,
+          children: [
+            ChoiceChip(
+              selectedColor: Colors.black,
+              selected: _importance == Importance.low,
+              label: const Text(
+                'low',
+                style: TextStyle(color: Colors.white),
+              ),
+              onSelected: (selected) {
+                setState(() {
+                  _importance = Importance.low;
+                });
+              },
+            ),
+            ChoiceChip(
+              selectedColor: Colors.amber,
+              label: const Text(
+                'medium',
+                style: TextStyle(color: Colors.white),
+              ),
+              selected: _importance == Importance.medium,
+              onSelected: (selected) {
+                setState(() {
+                  _importance = Importance.medium;
+                });
+              },
+            ),
+            ChoiceChip(
+              selectedColor: Colors.red,
+              label: const Text(
+                'High',
+                style: TextStyle(color: Colors.white),
+              ),
+              selected: _importance == Importance.high,
+              onSelected: (selected) {
+                setState(() {
+                  _importance = Importance.high;
+                });
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 // TODO: ADD buildDateField()
 // TODO: Add buildTimeField()
 // TODO: Add buildColorPicker()
 // TODO: Add buildQuantityField()
-  }
 }
