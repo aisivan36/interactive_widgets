@@ -32,7 +32,7 @@ class GroceryItemScreen extends StatefulWidget {
 }
 
 class _GroceryItemScreenState extends State<GroceryItemScreen> {
-  /// [_nameController] is a [TextEditingController].
+  /// The [_nameController] is a [TextEditingController].
   /// This controller listens for textchanges.
   ///  It controls the value displayed in a text field.
   final _nameController = TextEditingController();
@@ -99,9 +99,36 @@ class _GroceryItemScreenState extends State<GroceryItemScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              /// TODO add callback handler
+              print('tapped');
+              final groceryItem = GroceryItem(
+                id: widget.originalItem?.id ?? const Uuid().v1(),
+                name: _nameController.text,
+                importance: _importance,
+                color: _currentColor,
+                date: DateTime(
+                  _dueDate.year,
+                  _dueDate.month,
+                  _dueDate.day,
+                  _timeOfDay.hour,
+                  _timeOfDay.minute,
+                ),
+                quantity: _currentSliderValue,
+              );
+
+              /// If the use is updating the product, call the onUpdate
+              if (widget.isUpdating) {
+                widget.onUpdate(groceryItem);
+              } else {
+                /// otherwise it creates a new one
+                widget.onCreate(groceryItem);
+              }
+
+              /// Pop off the window will be dismissed
+              Navigator.pop(context);
             },
-            icon: Icon(Icons.check),
+
+            ///Icon check button
+            icon: const Icon(Icons.check),
           ),
         ],
 
