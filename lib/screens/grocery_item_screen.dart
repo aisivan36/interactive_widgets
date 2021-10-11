@@ -4,6 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../components/grocery_tile.dart';
 
 class GroceryItemScreen extends StatefulWidget {
   /// [onCreate] is a callback it lets us know  when a new item is created.
@@ -122,11 +123,26 @@ class _GroceryItemScreenState extends State<GroceryItemScreen> {
           children: [
             buildNameField(),
             buildImportanceField(),
-// TODO 15: Add date picker
-// TODO 16: Add time picker
-// TODO 17: Add color picker
-// TODO 18: Add slider
-// TODO: 19: Add Grocery Tile
+            buildDateField(context),
+            buildTimeField(context),
+            const SizedBox(height: 10),
+            buildColorPicker(context),
+            const SizedBox(height: 10),
+            buildQuantityField(),
+            GroceryTile(
+                item: GroceryItem(
+                    id: 'previewMode',
+                    name: _name,
+                    importance: _importance,
+                    color: _currentColor,
+                    date: DateTime(
+                      _dueDate.year,
+                      _dueDate.month,
+                      _dueDate.day,
+                      _timeOfDay.hour,
+                      _dueDate.minute,
+                    ),
+                    quantity: _currentSliderValue)),
           ],
         ),
       ),
@@ -188,7 +204,7 @@ class _GroceryItemScreenState extends State<GroceryItemScreen> {
               },
             ),
             ChoiceChip(
-              selectedColor: Colors.amber,
+              selectedColor: Colors.deepOrangeAccent,
               label: const Text(
                 'medium',
                 style: TextStyle(color: Colors.white),
@@ -218,8 +234,167 @@ class _GroceryItemScreenState extends State<GroceryItemScreen> {
       ],
     );
   }
-// TODO: ADD buildDateField()
-// TODO: Add buildTimeField()
-// TODO: Add buildColorPicker()
-// TODO: Add buildQuantityField()
+
+  /// Date Field
+  Widget buildDateField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Date',
+              style: GoogleFonts.lato(fontSize: 28.0),
+            ),
+            TextButton(
+                onPressed: () async {
+                  final currentDate = DateTime.now();
+                  final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: currentDate,
+                      firstDate: currentDate,
+                      lastDate: DateTime(currentDate.year + 5));
+                  setState(() {
+                    if (selectedDate != null) {
+                      _dueDate = selectedDate;
+                    }
+                  });
+                },
+                child: const Text('Select')),
+          ],
+        ),
+        Text('${DateFormat('yyyy-MM-dd').format(_dueDate)}'),
+      ],
+    );
+  }
+
+  /// Time Field
+  Widget buildTimeField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Time Of Day',
+              style: GoogleFonts.lato(fontSize: 28.0),
+            ),
+            TextButton(
+                onPressed: () async {
+                  final timeofDay = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  setState(() {
+                    if (timeofDay != null) {
+                      _timeOfDay = timeofDay;
+                    }
+                  });
+                },
+                child: const Text('Select')),
+          ],
+        ),
+        Text('${_timeOfDay.format(context)}')
+      ],
+    );
+  }
+
+  Widget buildColorPicker(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            /// [Container] to display the selected color
+            Container(
+              height: 50.0,
+              width: 10.0,
+              color: _currentColor,
+            ),
+            const SizedBox(height: 9.0),
+            Text(
+              'Color',
+              style: GoogleFonts.lato(fontSize: 28.0),
+            ),
+          ],
+        ),
+        TextButton(
+          onPressed: () {
+            /// Dialog Window
+            showDialog(
+                context: context,
+                builder: (context) {
+                  /// Wrap the [BlockPicker] inside the [AlertDialog]
+                  return AlertDialog(
+                    content: BlockPicker(
+                      pickerColor: Colors.white,
+                      onColorChanged: (color) {
+                        setState(() {
+                          _currentColor = color; // update the selected color
+                        });
+                      },
+                    ),
+                    actions: [
+                      /// Button to save color on the pop up window
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Save'),
+                      ),
+                    ],
+                  );
+                });
+          },
+          child: const Text('Select'),
+        )
+      ],
+    );
+  }
+
+  /// Quantity Field widget
+  Widget buildQuantityField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              'Quantity',
+              style: GoogleFonts.lato(fontSize: 28.0),
+            ),
+            const SizedBox(width: 16.0),
+            Text(
+              _currentSliderValue.toInt().toString(),
+              style: GoogleFonts.lato(fontSize: 18.0),
+            ),
+          ],
+        ),
+        Slider(
+            // inactive color with 50% transparent on the right hand
+            inactiveColor: _currentColor.withOpacity(0.5),
+            // active color with solid color on the left hand
+            activeColor: _currentColor,
+            // set the current slider value
+            value: _currentSliderValue.toDouble(),
+            //set min and max value
+            min: 0.0,
+            max: 100.0,
+            // set how we want the slider to increment value
+            divisions: 100,
+            //the label value that currently selected
+            label: _currentSliderValue.toInt().toString(),
+            onChanged: (double value) {
+              setState(() {
+                //update the current slider value
+                _currentSliderValue = value.toInt();
+              });
+            })
+      ],
+    );
+  }
 }
