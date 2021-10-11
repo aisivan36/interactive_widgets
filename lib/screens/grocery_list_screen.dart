@@ -76,7 +76,7 @@ class GroceryListScreen extends StatelessWidget {
                         /// Will throw the an update field window
                         /// Note that! This gives a blank so we don't
                         /// use navigator pop to remove the window
-                        // Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                     ),
                   ),
