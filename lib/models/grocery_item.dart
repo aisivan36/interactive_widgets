@@ -21,7 +21,7 @@ class GroceryItem {
     required this.importance,
     required this.color,
     required this.date,
-    required this.isComplete,
+    this.isComplete = false, // is complete default value is false
     required this.quantity,
   });
 
