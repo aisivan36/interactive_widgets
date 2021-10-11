@@ -31,6 +31,9 @@ class GroceryScreen extends StatelessWidget {
                 onCreate: (item) {
                   /// [addItem] adds this new item to the list of items
                   manager.addItem(item);
+
+                  /// Removes window
+                  Navigator.pop(context);
                 },
 
                 // ignore: lines_longer_than_80_chars
