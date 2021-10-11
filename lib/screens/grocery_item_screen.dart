@@ -122,9 +122,6 @@ class _GroceryItemScreenState extends State<GroceryItemScreen> {
                 /// otherwise it creates a new one
                 widget.onCreate(groceryItem);
               }
-
-              /// Pop off the window will be dismissed
-              Navigator.pop(context);
             },
 
             ///Icon check button
